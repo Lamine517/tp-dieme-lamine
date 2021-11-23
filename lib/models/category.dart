@@ -1,0 +1,4 @@
+enum Category {
+  business,
+  personal
+}
