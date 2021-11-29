@@ -5,6 +5,7 @@ import 'package:todoapp/screens/home_screen.dart';
 import 'package:todoapp/screens/login_screen.dart';
 import 'package:todoapp/screens/main_layout.dart';
 import 'package:todoapp/screens/menu_screen.dart';
+import 'package:todoapp/screens/task_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +22,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: MenuScreen(),
-      home: LoginScreen(),
+      home: MainLayout(),
+      // home: LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
