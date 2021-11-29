@@ -1,7 +1,7 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_field
 
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp/common/common.dart';
 import 'package:todoapp/models/task.dart';
@@ -33,10 +33,31 @@ class _TaskScreenState extends State<TaskScreen>
   String error = "";
   bool showError = false;
 
+  String? _title = "";
+  String? _category = "business";
+  DateTime? _date = DateTime.now();
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dueTimeController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
+  // final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _isDoneController = TextEditingController();
+  final List<String> _categoryController = ["business", "personal"];
+  // ignore: unnecessary_new
+  final _dateFormater = new DateFormat('MMM dd, yyyy');
+
+  _handleDatePicker() async {
+    final DateTime? date = await showDatePicker(
+        context: context,
+        initialDate: _date!,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2050));
+    if (date != null && date != _date) {
+      setState(() {
+        _date = date;
+      });
+      _dueTimeController.text = _dateFormater.format(date);
+    }
+  }
 
   @override
   void initState() {
@@ -221,10 +242,17 @@ class _TaskScreenState extends State<TaskScreen>
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextField(
-                                                      cursorColor:
-                                                          secondBackground,
+                                                      readOnly: true,
                                                       controller:
                                                           _dueTimeController,
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              "LiberationSerif",
+                                                          color: Colors.white,
+                                                          fontSize: 18),
+                                                      onTap: _handleDatePicker,
+                                                      cursorColor:
+                                                          secondBackground,
                                                       decoration:
                                                           InputDecoration
                                                               .collapsed(
@@ -235,11 +263,6 @@ class _TaskScreenState extends State<TaskScreen>
                                                                     color:
                                                                         secondBackground,
                                                                   )),
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            "LiberationSerif",
-                                                        color: Colors.white,
-                                                      ),
                                                       obscureText: false,
                                                     ),
                                                   ),
@@ -258,47 +281,52 @@ class _TaskScreenState extends State<TaskScreen>
                                             left: 50.0,
                                           ),
                                           decoration: inputDecoration(),
-                                          child: IconTheme(
-                                            data: IconThemeData(
-                                              color:
-                                                  Colors.white.withOpacity(.3),
-                                            ),
-                                            child: Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 9.0,
-                                              ),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Flexible(
-                                                    child: TextField(
-                                                      cursorColor:
-                                                          secondBackground,
-                                                      controller:
-                                                          _categoryController,
-                                                      decoration: InputDecoration
-                                                          .collapsed(
-                                                              hintText:
-                                                                  "Category",
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    secondBackground,
-                                                              )),
-                                                      style: TextStyle(
+                                          child: DropdownButtonFormField(
+                                            isDense: true,
+                                            icon: Icon(
+                                                Icons.arrow_drop_down_circle),
+                                            iconSize: 22.0,
+                                            iconEnabledColor:
+                                                Theme.of(context).primaryColor,
+                                            style: TextStyle(fontSize: 18),
+                                            decoration: InputDecoration(
+                                                labelText: 'category',
+                                                labelStyle: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: 'ProximaNova',
+                                                  color: secondBackground,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0))),
+                                            validator: (dynamic input) =>
+                                                input.toString().trim().isEmpty
+                                                    ? 'Svp selectionner un task'
+                                                    : null,
+                                            items: _categoryController
+                                                .map((String priority) {
+                                              return DropdownMenuItem(
+                                                  value: priority,
+                                                  child: new Text(
+                                                    priority,
+                                                    style: TextStyle(
                                                         fontFamily:
-                                                            "LiberationSerif",
-                                                        color: Colors.white,
-                                                      ),
-                                                      obscureText: false,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 40.0,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                                            'ProximaNova',
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        fontSize: 18.0),
+                                                  ));
+                                            }).toList(),
+                                            onChanged: (dynamic newValue) {
+                                              print(newValue.runtimeType);
+                                              setState(() {
+                                                _category = newValue.toString();
+                                              });
+                                            },
+                                            // value : _priority
                                           ),
                                         ),
                                       ],
@@ -359,14 +387,12 @@ class _TaskScreenState extends State<TaskScreen>
                                           if (_titleController
                                                   .text.isNotEmpty &&
                                               _dueTimeController
-                                                  .text.isNotEmpty &&
-                                              _categoryController
                                                   .text.isNotEmpty) {
                                             Task task = Task(
                                                 title: _titleController.text,
                                                 dueTime: DateTime.now(),
                                                 category:
-                                                    _categoryController.text,
+                                                    _categoryController[0],
                                                 isDone: true);
                                             setState(() {
                                               isLoadingAuth = true;
