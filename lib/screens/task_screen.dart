@@ -1,8 +1,11 @@
 // ignore_for_file: deprecated_member_use, unused_field
 
 import 'dart:io';
-import 'package:intl/intl.dart';
+// ignore: import_of_legacy_library_into_null_safe
+// import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+// import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:todoapp/common/common.dart';
 import 'package:todoapp/models/task.dart';
 import 'package:todoapp/screens/main_layout.dart';
@@ -36,6 +39,7 @@ class _TaskScreenState extends State<TaskScreen>
   String? _title = "";
   String? _category = "business";
   DateTime? _date = DateTime.now();
+  // String formatDate(DateTime date) => DateFormat("MMMM d").format(date);
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dueTimeController = TextEditingController();
@@ -43,7 +47,7 @@ class _TaskScreenState extends State<TaskScreen>
   final TextEditingController _isDoneController = TextEditingController();
   final List<String> _categoryController = ["business", "personal"];
   // ignore: unnecessary_new
-  final _dateFormater = new DateFormat('MMM dd, yyyy');
+  final _dateFormater = 'MMM dd yyyy';
 
   _handleDatePicker() async {
     final DateTime? date = await showDatePicker(
@@ -55,7 +59,7 @@ class _TaskScreenState extends State<TaskScreen>
       setState(() {
         _date = date;
       });
-      _dueTimeController.text = _dateFormater.format(date);
+      _dueTimeController.text = _dateFormater;
     }
   }
 
